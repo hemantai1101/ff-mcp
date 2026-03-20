@@ -1,0 +1,74 @@
+name: Deploy SendGrid MCP
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/sendgrid/**'
+      - 'packages/shared/**'
+      - 'scripts/**'
+      - '.github/workflows/deploy-sendgrid.yml'
+
+jobs:
+  deploy:
+    name: Build & Deploy to Cloud Functions
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: read
+      id-token: write  # required for Workload Identity Federation
+
+    env:
+      REGION: asia-east1
+      FUNCTION_NAME: mcp-sendgrid
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build SendGrid MCP
+        run: pnpm --filter "@mcp/sendgrid" run build
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Functions
+        run: |
+          gcloud functions deploy ${{ env.FUNCTION_NAME }} \
+            --gen2 \
+            --runtime=nodejs20 \
+            --region=${{ env.REGION }} \
+            --source=packages/sendgrid/dist \
+            --entry-point=sendgridMcp \
+            --trigger-http \
+            --allow-unauthenticated \
+            --set-secrets="SENDGRID_API_KEY=SENDGRID_API_KEY:latest" \
+            --set-env-vars="GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
+            --memory=256MB \
+            --timeout=60s \
+            --project=${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Print function URL
+        run: |
+          echo "Deployed: https://${{ env.REGION }}-${{ secrets.GCP_PROJECT_ID }}.cloudfunctions.net/${{ env.FUNCTION_NAME }}"
