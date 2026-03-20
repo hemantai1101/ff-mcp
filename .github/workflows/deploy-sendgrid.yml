@@ -32,8 +32,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -66,7 +64,7 @@ jobs:
             --trigger-http \
             --allow-unauthenticated \
             --set-secrets="SENDGRID_API_KEY=SENDGRID_API_KEY:latest" \
-            --service-account=${{ secrets.GCP_FUNCTION_SA }} \
+            --service-account=${{ env.GCP_FUNCTION_SA }} \
             --set-env-vars="GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
             --memory=256MB \
             --timeout=60s \
