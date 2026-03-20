@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsup",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "local": "tsx src/local.ts"
   },
   "dependencies": {
     "@mcp/shared": "workspace:*",
