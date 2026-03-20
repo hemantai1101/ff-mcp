@@ -19,7 +19,7 @@ This repo includes a `.mcp.json` at the root — Claude Code picks it up automat
 **1. Create a `.env` file at the repo root:**
 
 ```bash
-cp .env.example .env
+cp .env.template .env
 ```
 
 Then edit `.env` and set your key:
