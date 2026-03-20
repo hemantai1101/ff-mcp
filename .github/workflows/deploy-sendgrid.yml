@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -45,6 +45,9 @@ jobs:
 
       - name: Build SendGrid MCP
         run: pnpm --filter "@mcp/sendgrid" run build
+
+      - name: Prepare dist for Cloud Functions
+        run: echo '{"name":"mcp-sendgrid","version":"1.0.0","main":"index.js"}' > packages/sendgrid/dist/package.json
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -58,7 +61,7 @@ jobs:
         run: |
           gcloud functions deploy ${{ env.FUNCTION_NAME }} \
             --gen2 \
-            --runtime=nodejs20 \
+            --runtime=nodejs22 \
             --region=${{ env.REGION }} \
             --source=packages/sendgrid/dist \
             --entry-point=sendgridMcp \
