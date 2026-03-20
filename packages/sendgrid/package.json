@@ -10,7 +10,8 @@
   "dependencies": {
     "@mcp/shared": "workspace:*",
     "@sendgrid/client": "^8.0.0",
-    "@modelcontextprotocol/sdk": "^1.10.0"
+    "@modelcontextprotocol/sdk": "^1.10.0",
+    "zod": "^3.0.0"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
