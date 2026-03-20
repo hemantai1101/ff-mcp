@@ -24,6 +24,7 @@ jobs:
     env:
       REGION: asia-east1
       FUNCTION_NAME: mcp-sendgrid
+      GCP_FUNCTION_SA: ff-mcp-cloud-run@ff-mcp-490817.iam.gserviceaccount.com
 
     steps:
       - name: Checkout
@@ -65,6 +66,7 @@ jobs:
             --trigger-http \
             --allow-unauthenticated \
             --set-secrets="SENDGRID_API_KEY=SENDGRID_API_KEY:latest" \
+            --service-account=${{ secrets.GCP_FUNCTION_SA }} \
             --set-env-vars="GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
             --memory=256MB \
             --timeout=60s \
