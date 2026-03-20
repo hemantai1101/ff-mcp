@@ -24,6 +24,7 @@ jobs:
     env:
       REGION: asia-east1
       FUNCTION_NAME: mcp-sendgrid
+      GCP_PROJECT_ID: ff-mcp
       GCP_FUNCTION_SA: ff-mcp-cloud-run@ff-mcp-490817.iam.gserviceaccount.com
 
     steps:
@@ -65,11 +66,11 @@ jobs:
             --allow-unauthenticated \
             --set-secrets="SENDGRID_API_KEY=SENDGRID_API_KEY:latest" \
             --service-account=${{ env.GCP_FUNCTION_SA }} \
-            --set-env-vars="GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
+            --set-env-vars="GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }}" \
             --memory=256MB \
             --timeout=60s \
-            --project=${{ secrets.GCP_PROJECT_ID }}
+            --project=${{ env.GCP_PROJECT_ID }}
 
       - name: Print function URL
         run: |
-          echo "Deployed: https://${{ env.REGION }}-${{ secrets.GCP_PROJECT_ID }}.cloudfunctions.net/${{ env.FUNCTION_NAME }}"
+          echo "Deployed: https://${{ env.REGION }}-${{ env.GCP_PROJECT_ID }}.cloudfunctions.net/${{ env.FUNCTION_NAME }}"
