@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { createSendGridServer } from "./server.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 

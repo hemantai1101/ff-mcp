@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "sendgrid": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["--filter", "@mcp/sendgrid", "run", "local"]
+    }
+  }
+}
