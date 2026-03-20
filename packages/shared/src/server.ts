@@ -2,9 +2,15 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Request, Response } from "@google-cloud/functions-framework";
 
-export function createCloudFunctionHandler(serverFactory: () => Promise<McpServer>) {
+export function createCloudFunctionHandler(serverFactory: (apiKey: string) => Promise<McpServer>) {
   return async (req: Request, res: Response) => {
-    const server = await serverFactory();
+    const authHeader = req.headers.authorization ?? "";
+    const apiKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
+    if (!apiKey) {
+      res.status(401).json({ error: "Missing Authorization header with API key" });
+      return;
+    }
+    const server = await serverFactory(apiKey);
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined, // stateless mode
     });
