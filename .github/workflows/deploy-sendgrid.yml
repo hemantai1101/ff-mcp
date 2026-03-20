@@ -7,7 +7,6 @@ on:
     paths:
       - 'packages/sendgrid/**'
       - 'packages/shared/**'
-      - 'scripts/**'
       - '.github/workflows/deploy-sendgrid.yml'
   workflow_dispatch:
 
