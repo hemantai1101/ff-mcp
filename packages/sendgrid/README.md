@@ -16,19 +16,21 @@ An MCP server that exposes SendGrid email templates and designs as tools for Cla
 
 This repo includes a `.mcp.json` at the root — Claude Code picks it up automatically. You just need to provide your SendGrid API key via a `.env` file.
 
-**1. Create a `.env` file at the repo root:**
+**1. Create a `.env` file in this package:**
 
 ```bash
-cp .env.template .env
+cp packages/sendgrid/.env.template packages/sendgrid/.env
 ```
 
-Then edit `.env` and set your key:
+Then edit `packages/sendgrid/.env` and set your key:
 
 ```
 SENDGRID_API_KEY=your-actual-sendgrid-api-key
 ```
 
 > `.env` is gitignored — your key stays local.
+>
+> **Why `packages/sendgrid/.env` and not the repo root?** When pnpm runs a package script, it changes the working directory to the package folder. So `dotenv` reads `.env` from `packages/sendgrid/`, not the root.
 
 **2. Open the repo in Claude Code.**
 
