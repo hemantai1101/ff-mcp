@@ -7,6 +7,7 @@ dist/
 # Environment
 .env
 .env.local
+.mcp.json
 
 # pnpm
 .pnpm-store/
