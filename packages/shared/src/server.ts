@@ -5,7 +5,6 @@ import type { Request, Response } from "@google-cloud/functions-framework";
 export function createCloudFunctionHandler(server: McpServer) {
   return async (req: Request, res: Response) => {
     const transport = new StreamableHTTPServerTransport({
-      path: "/mcp",
       sessionIdGenerator: undefined, // stateless mode
     });
     await server.connect(transport);
