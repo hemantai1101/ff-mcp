@@ -47,7 +47,7 @@ jobs:
         run: pnpm --filter "@mcp/sendgrid" run build
 
       - name: Prepare dist for Cloud Functions
-        run: echo '{"name":"mcp-sendgrid","version":"1.0.0","main":"index.js"}' > packages/sendgrid/dist/package.json
+        run: echo '{"name":"mcp-sendgrid","version":"1.0.0","main":"index.js","dependencies":{"@google-cloud/functions-framework":"^3.0.0"}}' > packages/sendgrid/dist/package.json
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
