@@ -15,6 +15,14 @@
         "Authorization": "Bearer your-sendgrid-api-key",
         "X-Access-Token": "your-access-token"
       }
+    },
+    "sendgrid-ext": {
+      "type": "http",
+      "url": "https://mcp.fluentlab.co/sendgrid-mcp",
+      "headers": {
+        "Authorization": "Bearer your-sendgrid-api-key",
+        "X-Access-Token": "your-access-token"
+      }
     }
   }
 }
