@@ -22,7 +22,7 @@ jobs:
 
     env:
       REGION: asia-east1
-      FUNCTION_NAME: mcp-sendgrid
+      FUNCTION_NAME: sendgrid-mcp
       GCP_PROJECT_ID: ff-mcp-490817
       GCP_FUNCTION_SA: ff-mcp-cloud-run@ff-mcp-490817.iam.gserviceaccount.com
 
