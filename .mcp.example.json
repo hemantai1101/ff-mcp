@@ -12,7 +12,8 @@
       "type": "http",
       "url": "https://asia-east1-ff-mcp-490817.cloudfunctions.net/mcp-sendgrid",
       "headers": {
-        "Authorization": "Bearer your-sendgrid-api-key"
+        "Authorization": "Bearer your-sendgrid-api-key",
+        "X-Access-Token": "your-access-token"
       }
     }
   }

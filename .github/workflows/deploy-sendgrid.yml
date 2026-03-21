@@ -66,6 +66,7 @@ jobs:
             --entry-point=sendgridMcp \
             --trigger-http \
             --allow-unauthenticated \
+            --set-secrets="FF_MCP_ACCESS_TOKEN=FF_MCP_ACCESS_TOKEN:latest" \
             --service-account=${{ env.GCP_FUNCTION_SA }} \
             --set-env-vars="GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }}" \
             --memory=256MB \
