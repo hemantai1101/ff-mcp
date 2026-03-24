@@ -3,6 +3,7 @@ import client from "@sendgrid/client";
 import { registerTemplateTools } from "./tools/templates.js";
 import { registerTemplateVersionTools } from "./tools/template_versions.js";
 import { registerDesignTools } from "./tools/designs.js";
+import { registerMailTools } from "./tools/mail.js";
 
 export async function createSendGridServer(apiKey: string): Promise<McpServer> {
   client.setApiKey(apiKey);
@@ -15,6 +16,7 @@ export async function createSendGridServer(apiKey: string): Promise<McpServer> {
   registerTemplateTools(server);
   registerTemplateVersionTools(server);
   registerDesignTools(server);
+  registerMailTools(server);
 
   return server;
 }
