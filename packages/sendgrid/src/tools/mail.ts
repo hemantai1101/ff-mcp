@@ -27,8 +27,8 @@ const personalizationSchema = z.object({
   from: emailAddressSchema.optional().describe("Override the top-level from for this personalization"),
   reply_to: emailAddressSchema.optional().describe("Override reply-to for this personalization"),
   subject: z.string().optional().describe("Override subject for this personalization"),
-  headers: z.record(z.string()).optional().describe("Custom headers for this personalization"),
-  dynamic_template_data: z.record(z.unknown()).optional().describe("Handlebars template variables for this recipient"),
+  headers: z.record(z.string(), z.string()).optional().describe("Custom headers for this personalization"),
+  dynamic_template_data: z.record(z.string(), z.unknown()).optional().describe("Handlebars template variables for this recipient"),
 });
 
 export function registerMailTools(server: McpServer) {
