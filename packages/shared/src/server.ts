@@ -17,6 +17,10 @@ export function createCloudFunctionHandler(serverFactory: (apiKey: string) => Pr
       res.status(401).json({ error: "Missing Authorization header with API key" });
       return;
     }
+    // Ensure Accept header satisfies StreamableHTTP requirement,
+    // since some MCP clients (e.g. Claude Code) may omit one of the two types.
+    req.headers['accept'] = 'application/json, text/event-stream';
+
     const server = await serverFactory(apiKey);
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined, // stateless mode
