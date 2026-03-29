@@ -64,3 +64,25 @@ This registers the server in your local Claude Code config (not shared with the 
 ## Production Deployment
 
 The server is deployed as a Google Cloud Function (HTTP transport). See [`scripts/deploy.sh`](../../scripts/deploy.sh) for deployment instructions.
+
+---
+
+## Troubleshooting
+
+### MCP client gets "Not Acceptable" / 406 from the cloud endpoint
+
+**Root cause:** The `@modelcontextprotocol/sdk` `StreamableHTTPServerTransport` requires the incoming request to carry an `Accept` header that includes **both** `application/json` and `text/event-stream`. Claude Code's built-in MCP HTTP client omits this header entirely (or sends only one of the two MIME types), causing the SDK to reject the request with a 406 Not Acceptable error before any tool is invoked.
+
+> This is a known upstream bug tracked at [anthropics/claude-code#5960](https://github.com/anthropics/claude-code/issues/5960). The server-side fix below is the recommended workaround until Anthropic resolves it in the client.
+
+**Fix (already applied in `packages/shared/src/server.ts`):**
+
+```ts
+// Ensure Accept header satisfies StreamableHTTP requirement,
+// since some MCP clients (e.g. Claude Code) may omit one of the two types.
+req.headers['accept'] = 'application/json, text/event-stream';
+```
+
+This line is injected inside `createCloudFunctionHandler` — before the request is passed to `transport.handleRequest` — so every MCP server built on the shared handler inherits the fix automatically. No changes are needed in individual package servers.
+
+**If you add a new MCP server package**, build it on top of `createCloudFunctionHandler` from `@mcp/shared` and you will get this fix for free. Do **not** construct `StreamableHTTPServerTransport` directly in a Cloud Function without force-setting the `Accept` header first, or Claude Code will fail to connect.
