@@ -40,8 +40,10 @@ mcp.fluentlab.co
 | Static IP | `mcp-ip` | Global, `35.244.199.141` |
 | SSL Certificate | `mcp-cert` | Managed, ACTIVE for `mcp.fluentlab.co` |
 | NEG | `neg-sendgrid` | Serverless, `asia-east1`, Cloud Run service `sendgrid-mcp` |
+| NEG | `neg-searchconsole` | Serverless, `asia-east1`, Cloud Run service `searchconsole-mcp` |
 | Backend Service | `backend-sendgrid-mcp` | Global, HTTP |
-| URL Map | `mcp-urlmap` | Paths: `/sendgrid`, `/sendgrid/*` |
+| Backend Service | `backend-searchconsole-mcp` | Global, HTTP |
+| URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/searchconsole-mcp`, `/searchconsole-mcp/*` |
 | Target HTTPS Proxy | `mcp-proxy` | Uses `mcp-cert` |
 | Forwarding Rule | `mcp-forwarding-rule` | `35.244.199.141:443` → `mcp-proxy` |
 
@@ -110,8 +112,10 @@ pathMatchers:
   - name: mcp-paths
     defaultService: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
     pathRules:
-      - paths: ["/sendgrid", "/sendgrid/*"]
+      - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
+      - paths: ["/searchconsole-mcp", "/searchconsole-mcp/*"]
+        service: projects/ff-mcp-490817/global/backendServices/backend-searchconsole-mcp
 EOF
 ```
 
@@ -179,9 +183,11 @@ pathMatchers:
   - name: mcp-paths
     defaultService: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
     pathRules:
-      - paths: ["/sendgrid", "/sendgrid/*"]
+      - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
-      - paths: ["/notion", "/notion/*"]
+      - paths: ["/searchconsole-mcp", "/searchconsole-mcp/*"]
+        service: projects/ff-mcp-490817/global/backendServices/backend-searchconsole-mcp
+      - paths: ["/notion-mcp", "/notion-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-notion-mcp
 EOF
 ```

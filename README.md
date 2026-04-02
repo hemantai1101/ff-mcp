@@ -7,6 +7,7 @@ A monorepo of MCP (Model Context Protocol) servers deployed as Google Cloud Func
 | Package | Description |
 |---|---|
 | [`packages/sendgrid`](packages/sendgrid/README.md) | SendGrid email templates, designs, and send tools |
+| [`packages/searchconsole`](packages/searchconsole/) | Google Search Console — analytics, URL inspection, sitemaps, sites |
 | [`packages/shared`](packages/shared/) | Shared Cloud Function handler used by all MCP servers |
 
 ---
