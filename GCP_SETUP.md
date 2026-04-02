@@ -41,8 +41,10 @@ mcp.fluentlab.co
 | SSL Certificate | `mcp-cert` | Managed, ACTIVE for `mcp.fluentlab.co` |
 | NEG | `neg-sendgrid` | Serverless, `asia-east1`, Cloud Run service `sendgrid-mcp` |
 | NEG | `neg-searchconsole` | Serverless, `asia-east1`, Cloud Run service `searchconsole-mcp` |
+| NEG | `neg-not-found` | Serverless, `asia-east1`, Cloud Run service `not-found` — default backend |
 | Backend Service | `backend-sendgrid-mcp` | Global, HTTP |
 | Backend Service | `backend-searchconsole-mcp` | Global, HTTP |
+| Backend Service | `backend-not-found` | Global, HTTP — default backend (returns 404) |
 | URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/searchconsole-mcp`, `/searchconsole-mcp/*` |
 | Target HTTPS Proxy | `mcp-proxy` | Uses `mcp-cert` |
 | Forwarding Rule | `mcp-forwarding-rule` | `35.244.199.141:443` → `mcp-proxy` |
@@ -104,13 +106,13 @@ gcloud compute url-maps create mcp-urlmap \
 gcloud compute url-maps import mcp-urlmap \
   --global --project=$PROJECT << 'EOF'
 name: mcp-urlmap
-defaultService: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
+defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
 hostRules:
   - hosts: ["mcp.fluentlab.co"]
     pathMatcher: mcp-paths
 pathMatchers:
   - name: mcp-paths
-    defaultService: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
+    defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
     pathRules:
       - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
@@ -175,13 +177,13 @@ gcloud compute backend-services add-backend backend-notion-mcp \
 gcloud compute url-maps import mcp-urlmap \
   --global --project=$PROJECT << 'EOF'
 name: mcp-urlmap
-defaultService: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
+defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
 hostRules:
   - hosts: ["mcp.fluentlab.co"]
     pathMatcher: mcp-paths
 pathMatchers:
   - name: mcp-paths
-    defaultService: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
+    defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
     pathRules:
       - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
