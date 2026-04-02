@@ -1,7 +1,6 @@
-import { searchconsole } from "@googleapis/searchconsole";
 import { google } from "googleapis";
 
-export type GscClient = ReturnType<typeof searchconsole>;
+export type GscClient = ReturnType<typeof google.searchconsole>;
 
 export function buildGscClient(credential: string): GscClient {
   const trimmed = credential.trimStart();
@@ -23,5 +22,5 @@ export function buildGscClient(credential: string): GscClient {
     auth = oauthClient;
   }
 
-  return searchconsole({ version: "v1", auth });
+  return google.searchconsole({ version: "v1", auth });
 }
