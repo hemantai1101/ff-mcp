@@ -14,6 +14,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "list_designs",
     {
+      annotations: { readOnlyHint: true },
       description: "List all designs from the SendGrid design library. Supports cursor-based pagination.",
       inputSchema: {
         page_size: z.number().min(1).max(100).optional().describe("Number of designs per page (1–100, default 100)"),
@@ -33,6 +34,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "get_design",
     {
+      annotations: { readOnlyHint: true },
       description: "Get a specific design from the SendGrid design library",
       inputSchema: {
         design_id: z.string().describe("The SendGrid design ID"),
@@ -47,6 +49,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "create_design",
     {
+      annotations: { readOnlyHint: false },
       description: "Create a new design in the SendGrid design library",
       inputSchema: {
         html_content: z.string().describe("HTML body content (max 1MB)"),
@@ -65,6 +68,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "update_design",
     {
+      annotations: { readOnlyHint: false },
       description: "Update an existing design in the SendGrid design library",
       inputSchema: {
         design_id: z.string().describe("The SendGrid design ID to update"),
@@ -84,6 +88,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "delete_design",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Delete a design from the SendGrid design library",
       inputSchema: {
         design_id: z.string().describe("The SendGrid design ID to delete"),
@@ -98,6 +103,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "duplicate_design",
     {
+      annotations: { readOnlyHint: false },
       description: "Duplicate an existing design from the SendGrid design library",
       inputSchema: {
         design_id: z.string().describe("The SendGrid design ID to duplicate"),
@@ -114,6 +120,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "list_prebuilt_designs",
     {
+      annotations: { readOnlyHint: true },
       description: "List all SendGrid pre-built design templates from the design library",
       inputSchema: {
         page_size: z.number().min(1).max(100).optional().describe("Number of designs per page (1–100, default 100)"),
@@ -133,6 +140,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "get_prebuilt_design",
     {
+      annotations: { readOnlyHint: true },
       description: "Retrieve a specific SendGrid pre-built design template",
       inputSchema: {
         design_id: z.string().describe("The SendGrid pre-built design ID"),
@@ -147,6 +155,7 @@ export function registerDesignTools(server: McpServer) {
   server.registerTool(
     "duplicate_prebuilt_design",
     {
+      annotations: { readOnlyHint: false },
       description: "Duplicate a SendGrid pre-built design into your own design library",
       inputSchema: {
         design_id: z.string().describe("The SendGrid pre-built design ID to duplicate"),

@@ -8,6 +8,19 @@ importers:
 
   .: {}
 
+  packages/not-found:
+    dependencies:
+      '@google-cloud/functions-framework':
+        specifier: ^3.0.0
+        version: 3.5.1
+    devDependencies:
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
   packages/searchconsole:
     dependencies:
       '@googleapis/searchconsole':

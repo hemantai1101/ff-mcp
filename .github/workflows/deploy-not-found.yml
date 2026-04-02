@@ -1,0 +1,71 @@
+name: Deploy Not-Found Handler
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/not-found/**'
+      - '.github/workflows/deploy-not-found.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy to Cloud Functions
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      REGION: asia-east1
+      FUNCTION_NAME: not-found
+      GCP_PROJECT_ID: ff-mcp-490817
+      GCP_FUNCTION_SA: ff-mcp-cloud-run@ff-mcp-490817.iam.gserviceaccount.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Not-Found Handler
+        run: pnpm --filter "@mcp/not-found" run build
+
+      - name: Prepare dist for Cloud Functions
+        run: echo '{"name":"not-found","version":"1.0.0","main":"index.js","dependencies":{"@google-cloud/functions-framework":"^3.0.0"}}' > packages/not-found/dist/package.json
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Functions
+        run: |
+          gcloud functions deploy ${{ env.FUNCTION_NAME }} \
+            --gen2 \
+            --runtime=nodejs22 \
+            --region=${{ env.REGION }} \
+            --source=packages/not-found/dist \
+            --entry-point=notFoundHandler \
+            --trigger-http \
+            --allow-unauthenticated \
+            --service-account=${{ env.GCP_FUNCTION_SA }} \
+            --memory=128MB \
+            --timeout=10s \
+            --project=${{ env.GCP_PROJECT_ID }}

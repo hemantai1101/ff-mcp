@@ -6,6 +6,7 @@ export function registerTemplateTools(server: McpServer) {
   server.registerTool(
     "list_templates",
     {
+      annotations: { readOnlyHint: true },
       description: "List all dynamic email templates in SendGrid. Supports cursor-based pagination via page_token.",
       inputSchema: {
         page_size: z.number().min(1).max(200).optional().describe("Number of templates per page (1–200, default 100)"),
@@ -23,6 +24,7 @@ export function registerTemplateTools(server: McpServer) {
   server.registerTool(
     "get_template",
     {
+      annotations: { readOnlyHint: true },
       description: "Get a SendGrid dynamic template with all its versions",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),
@@ -37,6 +39,7 @@ export function registerTemplateTools(server: McpServer) {
   server.registerTool(
     "create_template",
     {
+      annotations: { readOnlyHint: false },
       description: "Create a new dynamic email template",
       inputSchema: {
         name: z.string().max(100).describe("Template name (max 100 characters)"),
@@ -55,6 +58,7 @@ export function registerTemplateTools(server: McpServer) {
   server.registerTool(
     "update_template",
     {
+      annotations: { readOnlyHint: false },
       description: "Rename an existing dynamic email template",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),
@@ -74,6 +78,7 @@ export function registerTemplateTools(server: McpServer) {
   server.registerTool(
     "delete_template",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Delete a dynamic email template and all its versions",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID to delete"),
@@ -88,6 +93,7 @@ export function registerTemplateTools(server: McpServer) {
   server.registerTool(
     "duplicate_template",
     {
+      annotations: { readOnlyHint: false },
       description: "Duplicate an existing dynamic email template",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID to duplicate"),

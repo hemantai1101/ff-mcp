@@ -6,6 +6,7 @@ export function registerSitemapTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "list_sitemaps",
     {
+      annotations: { readOnlyHint: true },
       description: "List all sitemaps submitted for a Search Console property.",
       inputSchema: {
         site_url: z.string().describe("The verified property URL, e.g. 'https://example.com/'"),
@@ -29,6 +30,7 @@ export function registerSitemapTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "get_sitemap",
     {
+      annotations: { readOnlyHint: true },
       description: "Get details for a specific sitemap including processing status and coverage stats.",
       inputSchema: {
         site_url: z.string().describe("The verified property URL"),
@@ -49,6 +51,7 @@ export function registerSitemapTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "submit_sitemap",
     {
+      annotations: { readOnlyHint: false },
       description: "Submit a sitemap to Google Search Console for indexing.",
       inputSchema: {
         site_url: z.string().describe("The verified property URL"),
@@ -74,6 +77,7 @@ export function registerSitemapTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "delete_sitemap",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Delete a sitemap from Google Search Console.",
       inputSchema: {
         site_url: z.string().describe("The verified property URL"),

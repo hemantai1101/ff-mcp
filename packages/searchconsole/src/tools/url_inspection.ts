@@ -6,6 +6,7 @@ export function registerUrlInspectionTools(server: McpServer, gsc: GscClient): v
   server.registerTool(
     "inspect_url",
     {
+      annotations: { readOnlyHint: true },
       description:
         "Inspect a URL's status in the Google index. Returns indexing status, last crawl date, " +
         "mobile usability issues, rich results validation, and AMP status. " +

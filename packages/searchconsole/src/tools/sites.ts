@@ -6,6 +6,7 @@ export function registerSiteTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "list_sites",
     {
+      annotations: { readOnlyHint: true },
       description: "List all sites (properties) verified in Google Search Console.",
       inputSchema: {},
     },
@@ -20,6 +21,7 @@ export function registerSiteTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "get_site",
     {
+      annotations: { readOnlyHint: true },
       description: "Get details for a specific Search Console property including permission level.",
       inputSchema: {
         site_url: z
@@ -42,6 +44,7 @@ export function registerSiteTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "add_site",
     {
+      annotations: { readOnlyHint: false },
       description: "Add a new site to Google Search Console. Requires site ownership verification afterward.",
       inputSchema: {
         site_url: z.string().url().describe("The URL of the site to add"),
@@ -65,6 +68,7 @@ export function registerSiteTools(server: McpServer, gsc: GscClient): void {
   server.registerTool(
     "delete_site",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Remove a site from Google Search Console.",
       inputSchema: {
         site_url: z

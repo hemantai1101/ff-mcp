@@ -35,6 +35,7 @@ export function registerMailTools(server: McpServer) {
   server.registerTool(
     "send_email",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Send an email via SendGrid. Supports plain text, HTML content, dynamic templates, attachments, and multiple recipients via personalizations.",
       inputSchema: {

@@ -17,6 +17,7 @@ export function registerTemplateVersionTools(server: McpServer) {
   server.registerTool(
     "create_template_version",
     {
+      annotations: { readOnlyHint: false },
       description: "Create a new version for a dynamic email template",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),
@@ -36,6 +37,7 @@ export function registerTemplateVersionTools(server: McpServer) {
   server.registerTool(
     "get_template_version",
     {
+      annotations: { readOnlyHint: true },
       description: "Retrieve a specific version of a dynamic email template",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),
@@ -54,6 +56,7 @@ export function registerTemplateVersionTools(server: McpServer) {
   server.registerTool(
     "update_template_version",
     {
+      annotations: { readOnlyHint: false },
       description: "Update the content or settings of a specific template version",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),
@@ -81,6 +84,7 @@ export function registerTemplateVersionTools(server: McpServer) {
   server.registerTool(
     "delete_template_version",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Delete a specific version of a dynamic email template",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),
@@ -99,6 +103,7 @@ export function registerTemplateVersionTools(server: McpServer) {
   server.registerTool(
     "activate_template_version",
     {
+      annotations: { readOnlyHint: false },
       description: "Set a specific template version as the active version for sending",
       inputSchema: {
         template_id: z.string().describe("The SendGrid template ID"),

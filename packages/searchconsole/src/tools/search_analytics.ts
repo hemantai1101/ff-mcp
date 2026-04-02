@@ -15,6 +15,7 @@ export function registerSearchAnalyticsTools(server: McpServer, gsc: GscClient):
   server.registerTool(
     "query_search_analytics",
     {
+      annotations: { readOnlyHint: true },
       description:
         "Query Google Search Console performance data. Returns clicks, impressions, CTR, and average position. " +
         "Group results by dimensions (query, page, country, device, date) and filter by any dimension value. " +
