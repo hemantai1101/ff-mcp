@@ -9,7 +9,7 @@ export async function createSearchConsoleServer(apiKey: string): Promise<McpServ
   const gsc = buildGscClient(apiKey);
 
   const server = new McpServer({
-    name: "searchconsole",
+    name: "google-search-console",
     version: "1.0.0",
   });
 

@@ -1,13 +1,13 @@
-name: Deploy SearchConsole MCP
+name: Deploy Google Search Console MCP
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'packages/searchconsole/**'
+      - 'packages/google-search-console/**'
       - 'packages/shared/**'
-      - '.github/workflows/deploy-searchconsole.yml'
+      - '.github/workflows/deploy-google-search-console.yml'
   workflow_dispatch:
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
 
     env:
       REGION: asia-east1
-      FUNCTION_NAME: searchconsole-mcp
+      FUNCTION_NAME: google-search-console-mcp
       GCP_PROJECT_ID: ff-mcp-490817
       GCP_FUNCTION_SA: ff-mcp-cloud-run@ff-mcp-490817.iam.gserviceaccount.com
 
@@ -42,11 +42,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build SearchConsole MCP
-        run: pnpm --filter "@mcp/searchconsole" run build
+      - name: Build Google Search Console MCP
+        run: pnpm --filter "@mcp/google-search-console" run build
 
       - name: Prepare dist for Cloud Functions
-        run: echo '{"name":"mcp-searchconsole","version":"1.0.0","main":"index.js","dependencies":{"@google-cloud/functions-framework":"^3.0.0"}}' > packages/searchconsole/dist/package.json
+        run: echo '{"name":"mcp-google-search-console","version":"1.0.0","main":"index.js","dependencies":{"@google-cloud/functions-framework":"^3.0.0"}}' > packages/google-search-console/dist/package.json
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -62,8 +62,8 @@ jobs:
             --gen2 \
             --runtime=nodejs22 \
             --region=${{ env.REGION }} \
-            --source=packages/searchconsole/dist \
-            --entry-point=searchconsoleMcp \
+            --source=packages/google-search-console/dist \
+            --entry-point=googleSearchConsoleMcp \
             --trigger-http \
             --allow-unauthenticated \
             --set-secrets="FF_MCP_ACCESS_TOKEN=FF_MCP_ACCESS_TOKEN:latest" \

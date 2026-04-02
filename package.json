@@ -6,6 +6,6 @@
   "scripts": {
     "build": "./scripts/build.sh",
     "build:sendgrid": "./scripts/build.sh sendgrid",
-    "build:searchconsole": "./scripts/build.sh searchconsole"
+    "build:google-search-console": "./scripts/build.sh google-search-console"
   }
 }

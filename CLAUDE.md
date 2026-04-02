@@ -16,7 +16,7 @@ A pnpm monorepo of MCP (Model Context Protocol) servers, each deployed as a Goog
 packages/
   shared/         # @mcp/shared — Cloud Function handler used by every MCP server
   sendgrid/       # @mcp/sendgrid — SendGrid MCP (templates, designs, send email)
-  searchconsole/  # @mcp/searchconsole — Google Search Console MCP
+  google-search-console/  # @mcp/google-search-console — Google Search Console MCP
 ```
 
 **Package manager:** pnpm@9 with workspaces (`packages/*` glob).
@@ -25,7 +25,7 @@ packages/
 
 ## Pattern for Adding a New MCP Server
 
-Every new MCP follows the same structure as `packages/sendgrid/` or `packages/searchconsole/`:
+Every new MCP follows the same structure as `packages/sendgrid/` or `packages/google-search-console/`:
 
 ```
 packages/<name>/
@@ -51,9 +51,9 @@ packages/<name>/
 | MCP | Credential type | How it's passed |
 |-----|----------------|-----------------|
 | sendgrid | SendGrid API key | `Authorization: Bearer SG.xxx` |
-| searchconsole | Service account JSON (compact) or OAuth2 token | `Authorization: Bearer {...}` or `Bearer ya29.xxx` |
+| google-search-console | Service account JSON (compact) or OAuth2 token | `Authorization: Bearer {...}` or `Bearer ya29.xxx` |
 
-For Google APIs: if the Bearer value starts with `{`, it's parsed as service account JSON → `google.auth.JWT`. Otherwise it's treated as an OAuth2 access token. This logic lives in `packages/searchconsole/src/client.ts`.
+For Google APIs: if the Bearer value starts with `{`, it's parsed as service account JSON → `google.auth.JWT`. Otherwise it's treated as an OAuth2 access token. This logic lives in `packages/google-search-console/src/client.ts`.
 
 For local dev, Google credentials go in `GOOGLE_SERVICE_ACCOUNT_JSON` env var (compact single-line JSON).
 
@@ -66,7 +66,7 @@ See [`GCP_SETUP.md`](GCP_SETUP.md) for full commands. Current path routing on `m
 | Path | Backend |
 |------|---------|
 | `/sendgrid-mcp`, `/sendgrid-mcp/*` | `backend-sendgrid-mcp` |
-| `/searchconsole-mcp`, `/searchconsole-mcp/*` | `backend-searchconsole-mcp` |
+| `/google-search-console-mcp`, `/google-search-console-mcp/*` | `backend-google-search-console-mcp` |
 
 **When you add a new MCP service, you must also:**
 1. Create a Serverless NEG pointing to the new Cloud Function

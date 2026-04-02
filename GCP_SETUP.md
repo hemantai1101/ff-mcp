@@ -40,12 +40,12 @@ mcp.fluentlab.co
 | Static IP | `mcp-ip` | Global, `35.244.199.141` |
 | SSL Certificate | `mcp-cert` | Managed, ACTIVE for `mcp.fluentlab.co` |
 | NEG | `neg-sendgrid` | Serverless, `asia-east1`, Cloud Run service `sendgrid-mcp` |
-| NEG | `neg-searchconsole` | Serverless, `asia-east1`, Cloud Run service `searchconsole-mcp` |
+| NEG | `neg-google-search-console` | Serverless, `asia-east1`, Cloud Run service `google-search-console-mcp` |
 | NEG | `neg-not-found` | Serverless, `asia-east1`, Cloud Run service `not-found` — default backend |
 | Backend Service | `backend-sendgrid-mcp` | Global, HTTP |
-| Backend Service | `backend-searchconsole-mcp` | Global, HTTP |
+| Backend Service | `backend-google-search-console-mcp` | Global, HTTP |
 | Backend Service | `backend-not-found` | Global, HTTP — default backend (returns 404) |
-| URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/searchconsole-mcp`, `/searchconsole-mcp/*` |
+| URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/google-search-console-mcp`, `/google-search-console-mcp/*` |
 | Target HTTPS Proxy | `mcp-proxy` | Uses `mcp-cert` |
 | Forwarding Rule | `mcp-forwarding-rule` | `35.244.199.141:443` → `mcp-proxy` |
 
@@ -116,8 +116,8 @@ pathMatchers:
     pathRules:
       - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
-      - paths: ["/searchconsole-mcp", "/searchconsole-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-searchconsole-mcp
+      - paths: ["/google-search-console-mcp", "/google-search-console-mcp/*"]
+        service: projects/ff-mcp-490817/global/backendServices/backend-google-search-console-mcp
 EOF
 ```
 
@@ -187,8 +187,8 @@ pathMatchers:
     pathRules:
       - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
-      - paths: ["/searchconsole-mcp", "/searchconsole-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-searchconsole-mcp
+      - paths: ["/google-search-console-mcp", "/google-search-console-mcp/*"]
+        service: projects/ff-mcp-490817/global/backendServices/backend-google-search-console-mcp
       - paths: ["/notion-mcp", "/notion-mcp/*"]
         service: projects/ff-mcp-490817/global/backendServices/backend-notion-mcp
 EOF
