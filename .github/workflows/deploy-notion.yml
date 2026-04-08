@@ -66,9 +66,9 @@ jobs:
             --entry-point=notionMcp \
             --trigger-http \
             --allow-unauthenticated \
-            --set-secrets="FF_MCP_ACCESS_TOKEN=FF_MCP_ACCESS_TOKEN:latest" \
+            --set-secrets="NOTION_CLIENT_ID=NOTION_CLIENT_ID:latest,NOTION_CLIENT_SECRET=NOTION_CLIENT_SECRET:latest,MCP_AUTH_SECRET=MCP_AUTH_SECRET:latest" \
             --service-account=${{ env.GCP_FUNCTION_SA }} \
-            --set-env-vars="GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }}" \
+            --set-env-vars="GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},NOTION_MCP_BASE_URL=https://mcp.fluentlab.co" \
             --memory=256MB \
             --timeout=60s \
             --project=${{ env.GCP_PROJECT_ID }}
