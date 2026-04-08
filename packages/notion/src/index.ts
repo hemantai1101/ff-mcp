@@ -17,6 +17,7 @@ const resourceMetadataUrl = getOAuthProtectedResourceMetadataUrl(SERVER_URL);
 // ─── Express app ─────────────────────────────────────────────────────────────
 
 const app = express();
+app.set("trust proxy", 1); // GCP load balancer sets X-Forwarded-For; needed for express-rate-limit
 app.use(express.json());
 
 // Claude Code compatibility: ensure Accept header satisfies StreamableHTTP requirement
