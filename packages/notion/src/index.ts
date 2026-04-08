@@ -75,3 +75,4 @@ app.all("/notion-mcp/*", bearerAuth, mcpRequestHandler);
 
 // ─── Cloud Function export ────────────────────────────────────────────────────
 export const notionMcp = (req: express.Request, res: express.Response) => app(req, res);
+
