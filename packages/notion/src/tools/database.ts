@@ -15,7 +15,7 @@ export function registerDatabaseTools(server: McpServer, client: Client) {
       inputSchema: {
         database_id: z.string().describe("The Notion database ID (UUID with or without dashes)"),
         filter: z
-          .record(z.unknown())
+          .any()
           .optional()
           .describe(
             "Notion filter object. Examples: " +
@@ -23,12 +23,7 @@ export function registerDatabaseTools(server: McpServer, client: Client) {
             '{ "and": [{ "property": "Status", "status": { "equals": "Active" } }, { "property": "ID", "rich_text": { "starts_with": "CM" } }] }'
           ),
         sorts: z
-          .array(
-            z.object({
-              property: z.string().describe("Property name to sort by"),
-              direction: z.enum(["ascending", "descending"]),
-            })
-          )
+          .any()
           .optional()
           .describe('Sort order, e.g. [{ "property": "Name", "direction": "ascending" }]'),
         start_cursor: z
