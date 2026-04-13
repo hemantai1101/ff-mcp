@@ -16,20 +16,15 @@ Files are auto-deleted after **24 hours**. Always present the public URL to the 
 
 ## Session Setup (REQUIRED — do this first)
 
-At the start of every session, call `browser_run_code` to generate a unique session ID and create your session directory on the GCS-mounted storage:
+At the start of every session, call `browser_evaluate` to generate a unique session ID:
 
-```javascript
-async (page) => {
-  const { randomUUID } = require('crypto');
-  const fs = require('fs');
-  const sessionId = randomUUID();
-  const dir = `/app/artifacts/${sessionId}`;
-  fs.mkdirSync(dir, { recursive: true });
-  return { sessionId, artifactDir: dir };
-}
+```
+browser_evaluate: () => Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)
 ```
 
-**Store the returned `sessionId`** — use it in all artifact paths for this session.
+Example result: `"mnxdilwp-q4hio0a0"`
+
+**Store the returned value as your session ID** — use it in all artifact paths for this session. No directory creation is needed; GCS FUSE creates subdirectories automatically when files are written.
 
 All artifacts go under `/app/artifacts/<sessionId>/`:
 - Videos: `/app/artifacts/<sessionId>/recording.webm`
@@ -56,7 +51,7 @@ All artifacts go under `/app/artifacts/<sessionId>/`:
   ```javascript
   async (page) => {
     await page.screenshot({ path: '/app/artifacts/<sessionId>/screenshot.png' });
-    return { url: 'https://storage.googleapis.com/ff-mcp-artifacts-490817/<sessionId>/screenshot.png' };
+    return 'https://storage.googleapis.com/ff-mcp-artifacts-490817/<sessionId>/screenshot.png';
   }
   ```
 
