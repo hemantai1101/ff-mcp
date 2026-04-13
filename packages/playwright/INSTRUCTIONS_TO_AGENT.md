@@ -97,7 +97,7 @@ After `browser_stop_video`, the video is at:
 
 ## Recommended Workflow
 
-1. **Session Setup** → `browser_run_code` to generate `sessionId` and create `/app/artifacts/<sessionId>/` directory
+1. **Session Setup** → `browser_evaluate` to generate `sessionId` (see Session Setup above)
 2. `browser_resize` → set viewport (e.g. 1280×720 or 1920×1080)
 3. `browser_start_video` → `filename: "/app/artifacts/<sessionId>/recording.webm"` + matching size
 4. `browser_navigate` → go to URL
