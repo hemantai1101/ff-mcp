@@ -54,7 +54,7 @@ jobs:
             --min-instances 1 \
             --memory 4Gi \
             --cpu 2 \
-            --concurrency 5
+            --concurrency 20
 
       - name: Print service URL
         run: |
