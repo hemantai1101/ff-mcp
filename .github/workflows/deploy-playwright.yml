@@ -51,7 +51,11 @@ jobs:
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image ${{ env.IMAGE }} \
             --region ${{ env.REGION }} \
-            --project ${{ env.GCP_PROJECT_ID }}
+            --project ${{ env.GCP_PROJECT_ID }} \
+            --min-instances 1 \
+            --memory 4Gi \
+            --cpu 2 \
+            --concurrency 5
 
       - name: Print service URL
         run: |
