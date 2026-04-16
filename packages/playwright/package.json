@@ -4,7 +4,7 @@
   "private": true,
   "description": "Playwright MCP Server deployment package",
   "scripts": {
-    "start": "npx @playwright/mcp@latest --port ${PORT:-8080} --host 0.0.0.0 --allowed-hosts '*' --output-dir /app/artifacts --browser chromium --snapshot-mode none --caps devtools --isolated"
+    "start": "npx @playwright/mcp@latest --port ${PORT:-8080} --host 0.0.0.0 --allowed-hosts '*' --output-dir /app/artifacts --browser chromium --snapshot-mode none --caps devtools"
   },
   "dependencies": {
     "@playwright/mcp": "latest"

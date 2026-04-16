@@ -39,6 +39,14 @@ All artifacts go under `/app/artifacts/<sessionId>/`:
 - `browser_navigate_back` — go back
 - `browser_wait_for` — wait for a selector or condition
 
+### Tab Management (IMPORTANT)
+Some sites open new tabs or close the original tab during login/redirects. If you get **"Tab 0 not found"** or **"No open pages available"**:
+1. Call `browser_tabs` to list all open tabs
+2. The new tab will have a different index — use the `id` from the result in subsequent tool calls
+3. If no tabs are open, the browser crashed — call `browser_navigate` to a URL to re-open a page
+
+Always call `browser_tabs` after any login flow or navigation that may trigger a popup/redirect.
+
 ### Viewport / Window Size
 - `browser_resize` — set the browser viewport (e.g. `width: 1920, height: 1080`)
 - Always resize **before** navigating if a specific dimension is needed
