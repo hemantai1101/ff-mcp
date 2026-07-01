@@ -8,6 +8,31 @@ importers:
 
   .: {}
 
+  packages/fundfluent:
+    dependencies:
+      '@mcp/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.10.0
+        version: 1.27.1(zod@4.3.6)
+      dotenv:
+        specifier: ^16.0.0
+        version: 16.6.1
+      zod:
+        specifier: ^4.0
+        version: 4.3.6
+    devDependencies:
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
+      tsx:
+        specifier: ^4.0.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
   packages/google-search-console:
     dependencies:
       '@mcp/shared':
@@ -85,6 +110,12 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+
+  packages/playwright:
+    dependencies:
+      '@playwright/mcp':
+        specifier: latest
+        version: 0.0.77
 
   packages/sendgrid:
     dependencies:
@@ -354,6 +385,11 @@ packages:
   '@notionhq/client@2.3.0':
     resolution: {integrity: sha512-l7WqTCpQqC+HibkB9chghONQTYcxNQT0/rOJemBfmuKQRTu2vuV8B3yA395iKaUdDo7HI+0KvQaz9687Xskzkw==}
     engines: {node: '>=12'}
+
+  '@playwright/mcp@0.0.77':
+    resolution: {integrity: sha512-vf3PmCdOWVvEc3Vmh8DVWvsbz6/rIGi+OG0cyC/2YTn10U8tZMHEiRG62LHdPTTf0qCjoS7/1mbyS5F0RHoTzQ==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -952,6 +988,11 @@ packages:
     resolution: {integrity: sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==}
     engines: {node: '>= 0.8'}
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -1320,6 +1361,16 @@ packages:
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
+
+  playwright-core@1.62.0-alpha-2026-06-29:
+    resolution: {integrity: sha512-/13EvW8l9Bmvt9nKHey+OcvZ8nob2FM8BCKBsUNwbXgmT4Hc0XX2b6mOErU0RBYNedOCa9q15USI7SY9K17v4w==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.62.0-alpha-2026-06-29:
+    resolution: {integrity: sha512-ugaMuh6rAOqmbaxrM7+XQSs7M6yPXykq5gVugJPClHcJ4Cqxmky5rDHhrCt4wmaILUeMdI7kPBCx3zMx2Qu+bg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -1878,6 +1929,11 @@ snapshots:
       node-fetch: 2.7.0
     transitivePeerDependencies:
       - encoding
+
+  '@playwright/mcp@0.0.77':
+    dependencies:
+      playwright: 1.62.0-alpha-2026-06-29
+      playwright-core: 1.62.0-alpha-2026-06-29
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -2512,6 +2568,9 @@ snapshots:
 
   fresh@2.0.0: {}
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -2890,6 +2949,14 @@ snapshots:
       confbox: 0.1.8
       mlly: 1.8.2
       pathe: 2.0.3
+
+  playwright-core@1.62.0-alpha-2026-06-29: {}
+
+  playwright@1.62.0-alpha-2026-06-29:
+    dependencies:
+      playwright-core: 1.62.0-alpha-2026-06-29
+    optionalDependencies:
+      fsevents: 2.3.2
 
   possible-typed-array-names@1.1.0: {}
 
