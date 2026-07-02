@@ -19,7 +19,7 @@ export function registerTaskTools(server: McpServer, client: FundFluentClient, c
     },
     async ({ storyId, statuses, limit, page, sort }) => {
       const data = await client.pt("/tasks", {
-        query: { type: "Story", refId: storyId, companyId, statusList: statuses, limit, page, sort },
+        query: { originType: "Story", originRefId: storyId, companyId, statusList: statuses, limit, page, sort },
       });
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
