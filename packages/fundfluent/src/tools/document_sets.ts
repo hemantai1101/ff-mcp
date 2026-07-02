@@ -104,7 +104,7 @@ export function registerDocumentSetTools(server: McpServer, client: FundFluentCl
     async ({ documentSetId, documentIds }) => {
       const data = await client.doc(`/document-set/${documentSetId}/add-documents`, {
         method: "PATCH",
-        body: JSON.stringify({ documentIds }),
+        body: JSON.stringify({ documentIds, actioner: machineActioner(companyId) }),
       });
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
@@ -123,7 +123,7 @@ export function registerDocumentSetTools(server: McpServer, client: FundFluentCl
     async ({ documentSetId, documentIds }) => {
       const data = await client.doc(`/document-set/${documentSetId}/remove-documents`, {
         method: "PATCH",
-        body: JSON.stringify({ documentIds }),
+        body: JSON.stringify({ documentIds, actioner: machineActioner(companyId) }),
       });
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
