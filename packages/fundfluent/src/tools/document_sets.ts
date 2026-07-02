@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { FundFluentClient } from "../client.js";
+import { FundFluentClient, machineActioner } from "../client.js";
 
 export function registerDocumentSetTools(server: McpServer, client: FundFluentClient, companyId: string) {
   server.registerTool(
@@ -66,7 +66,7 @@ export function registerDocumentSetTools(server: McpServer, client: FundFluentCl
     async ({ name, storyId }) => {
       const data = await client.doc("/document-set", {
         method: "POST",
-        body: JSON.stringify({ name, companyId, storyId }),
+        body: JSON.stringify({ name, companyId, storyId, actioner: machineActioner(companyId) }),
       });
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
