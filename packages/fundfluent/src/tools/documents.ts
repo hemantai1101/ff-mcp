@@ -1,8 +1,45 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { FundFluentClient } from "../client.js";
+import { FundFluentClient, machineActioner } from "../client.js";
+
+const DOCUMENT_CATEGORIES = [
+  "ApplicationForm", "BusinessProposal", "PitchDeck", "CompanyRegistration",
+  "IdentityProof", "OwnershipStructure", "TeamProfile", "FinancialReport",
+  "FundingRecord", "ProcurementRecord", "ServiceContract", "LocalEntity",
+  "RDMaterial", "IPDocument", "ProductBrochure", "MediaFile", "WebsiteProof",
+  "PlatformSetup", "HiringRecord", "ProgressReport", "AuditReport",
+  "EventEvidence", "Others",
+] as const;
 
 export function registerDocumentTools(server: McpServer, client: FundFluentClient, companyId: string) {
+  server.registerTool(
+    "create_document",
+    {
+      annotations: { readOnlyHint: false },
+      description: "Create a document placeholder record in the Data Vault (no file upload — use the frontend to attach the actual file). Useful for pre-populating required documents for a funding application.",
+      inputSchema: {
+        documentName: z.string().describe("Display name for the document, e.g. 'Business Registration Certificate.pdf'"),
+        type: z.string().describe("Document type, e.g. 'HongKongBR', 'BankStatement', 'FinancialReport', 'PitchDeck'. Use get_document_types to see all valid values."),
+        category: z.enum(DOCUMENT_CATEGORIES).optional()
+          .describe("Document category for organisation, e.g. 'CompanyRegistration', 'FinancialReport', 'PitchDeck'"),
+      },
+    },
+    async ({ documentName, type, category }) => {
+      const data = await client.doc("/documents", {
+        method: "POST",
+        body: JSON.stringify({
+          companyId,
+          documentName,
+          originalFilename: documentName,
+          type,
+          category,
+          actioner: machineActioner(companyId),
+        }),
+      });
+      return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+    }
+  );
+
   server.registerTool(
     "list_documents",
     {
