@@ -8,6 +8,7 @@ dist/
 .env
 .env.local
 .mcp.json
+.mcp.bak.json
 
 # pnpm
 .pnpm-store/

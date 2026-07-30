@@ -45,7 +45,9 @@ mcp.fluentlab.co
 | Backend Service | `backend-sendgrid-mcp` | Global, HTTP |
 | Backend Service | `backend-google-search-console-mcp` | Global, HTTP |
 | Backend Service | `backend-not-found` | Global, HTTP — default backend (returns 404) |
-| URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/google-search-console-mcp`, `/google-search-console-mcp/*` |
+| NEG | `neg-fundfluent` | Serverless, `asia-east1`, Cloud Run service `fundfluent-mcp` |
+| Backend Service | `backend-fundfluent-mcp` | Global, HTTP |
+| URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/google-search-console-mcp`, `/google-search-console-mcp/*`, `/fundfluent-mcp`, `/fundfluent-mcp/*` |
 | Target HTTPS Proxy | `mcp-proxy` | Uses `mcp-cert` |
 | Forwarding Rule | `mcp-forwarding-rule` | `35.244.199.141:443` → `mcp-proxy` |
 
