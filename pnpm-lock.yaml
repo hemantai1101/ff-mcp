@@ -111,6 +111,31 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
+  packages/notion-file-upload:
+    dependencies:
+      '@mcp/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.10.0
+        version: 1.27.1(zod@4.3.6)
+      dotenv:
+        specifier: ^16.0.0
+        version: 16.6.1
+      zod:
+        specifier: ^4.0
+        version: 4.3.6
+    devDependencies:
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
+      tsx:
+        specifier: ^4.0.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
   packages/playwright:
     dependencies:
       '@playwright/mcp':

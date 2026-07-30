@@ -23,6 +23,14 @@
         "Authorization": "Bearer your-sendgrid-api-key",
         "X-Access-Token": "your-access-token"
       }
+    },
+    "notion-file-upload": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["--filter", "@mcp/notion-file-upload", "run", "local"],
+      "env": {
+        "NOTION_FILE_UPLOAD_TOKEN": "ntn_your_internal_integration_token"
+      }
     }
   }
 }
