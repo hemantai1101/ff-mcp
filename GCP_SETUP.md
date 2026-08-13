@@ -6,7 +6,7 @@ Custom domain `mcp.fluentlab.co` with path-based routing to MCP servers deployed
 **Domain:** `mcp.fluentlab.co`
 **Config:** [`hosting/firebase.json`](hosting/firebase.json)
 
-> **History:** this replaced a GCP Global HTTPS Load Balancer (see git history for the old `GCP_SETUP.md`), which cost ~$141/month in forwarding-rule fees regardless of traffic. Firebase Hosting rewrites give the same path-based routing on the same domain for free. A prior plan to use Cloud Run domain mappings instead (see [`MIGRATION_CLOUD_RUN_DOMAIN_MAPPING.md`](MIGRATION_CLOUD_RUN_DOMAIN_MAPPING.md)) was superseded by this approach, since domain mappings don't support path-based routing (subdomain-per-service only) and the old URL scheme needed to stay intact for existing clients.
+> **History:** this replaced a GCP Global HTTPS Load Balancer (see git history for the old `GCP_SETUP.md`), which cost ~$141/month in forwarding-rule fees regardless of traffic. Firebase Hosting rewrites give the same path-based routing on the same domain for free. A prior plan to use Cloud Run domain mappings instead (see [`docs/archive/MIGRATION_CLOUD_RUN_DOMAIN_MAPPING.md`](docs/archive/MIGRATION_CLOUD_RUN_DOMAIN_MAPPING.md)) was superseded by this approach, since domain mappings don't support path-based routing (subdomain-per-service only) and the old URL scheme needed to stay intact for existing clients.
 
 ---
 
