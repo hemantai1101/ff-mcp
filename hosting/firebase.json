@@ -1,0 +1,18 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/sendgrid-mcp/**", "run": { "serviceId": "sendgrid-mcp", "region": "asia-east1" } },
+      { "source": "/sendgrid-mcp", "run": { "serviceId": "sendgrid-mcp", "region": "asia-east1" } },
+      { "source": "/notion-mcp/**", "run": { "serviceId": "notion-mcp", "region": "asia-east1" } },
+      { "source": "/notion-mcp", "run": { "serviceId": "notion-mcp", "region": "asia-east1" } },
+      { "source": "/google-search-console-mcp/**", "run": { "serviceId": "google-search-console-mcp", "region": "asia-east1" } },
+      { "source": "/google-search-console-mcp", "run": { "serviceId": "google-search-console-mcp", "region": "asia-east1" } },
+      { "source": "/fundfluent-mcp/**", "run": { "serviceId": "fundfluent-mcp", "region": "asia-east1" } },
+      { "source": "/fundfluent-mcp", "run": { "serviceId": "fundfluent-mcp", "region": "asia-east1" } },
+      { "source": "/playwright-mcp/**", "run": { "serviceId": "playwright-mcp", "region": "us-central1" } },
+      { "source": "/playwright-mcp", "run": { "serviceId": "playwright-mcp", "region": "us-central1" } }
+    ]
+  }
+}

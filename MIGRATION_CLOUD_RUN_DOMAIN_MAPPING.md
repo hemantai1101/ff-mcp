@@ -1,6 +1,6 @@
 # Migration Plan: Replace GCP Load Balancer with Cloud Run Domain Mappings
 
-> **Status: On Hold** — Cloud Run domain mappings are still in Preview/Beta (not GA). Revisit when the feature reaches GA.
+> **Status: Superseded** — the load balancer was replaced with **Firebase Hosting rewrites** instead (see [`GCP_SETUP.md`](GCP_SETUP.md)), which supports path-based routing on the same domain/URL scheme and required no client-side changes. This plan's subdomain-per-service scheme was never implemented. Kept for historical context.
 
 ## Why
 

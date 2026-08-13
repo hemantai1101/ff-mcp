@@ -1,11 +1,12 @@
-# GCP Load Balancer Setup
+# Firebase Hosting Setup
 
-Custom domain `mcp.fluentlab.co` with path-based routing to MCP servers deployed as Cloud Functions (gen2 / Cloud Run).
+Custom domain `mcp.fluentlab.co` with path-based routing to MCP servers deployed as Cloud Run services, via Firebase Hosting rewrites.
 
-**Project:** `ff-mcp-490817`
-**Region:** `asia-east1`
+**Project:** `ff-mcp-490817` (Firebase attached to the existing GCP project — same billing account)
 **Domain:** `mcp.fluentlab.co`
-**Static IP:** `35.244.199.141`
+**Config:** [`hosting/firebase.json`](hosting/firebase.json)
+
+> **History:** this replaced a GCP Global HTTPS Load Balancer (see git history for the old `GCP_SETUP.md`), which cost ~$141/month in forwarding-rule fees regardless of traffic. Firebase Hosting rewrites give the same path-based routing on the same domain for free. A prior plan to use Cloud Run domain mappings instead (see [`MIGRATION_CLOUD_RUN_DOMAIN_MAPPING.md`](MIGRATION_CLOUD_RUN_DOMAIN_MAPPING.md)) was superseded by this approach, since domain mappings don't support path-based routing (subdomain-per-service only) and the old URL scheme needed to stay intact for existing clients.
 
 ---
 
@@ -14,199 +15,88 @@ Custom domain `mcp.fluentlab.co` with path-based routing to MCP servers deployed
 ```
 mcp.fluentlab.co
        │
-  (DNS A record → 35.244.199.141)
+  (DNS A record → 199.36.158.100, Firebase Hosting's fixed IP)
        │
-  Forwarding Rule (mcp-forwarding-rule) :443
+  Firebase Hosting (site: ff-mcp-490817)
        │
-  Target HTTPS Proxy (mcp-proxy)
-       │
-  SSL Certificate (mcp-cert) — mcp.fluentlab.co
-       │
-  URL Map (mcp-urlmap)
-       ├── /sendgrid, /sendgrid/*  → backend-sendgrid-mcp
-       └── (future paths)         → backend-{service}-mcp
-              │
-    Serverless NEG (neg-{service})
-              │
-    Cloud Run service ({service}-mcp)
+  hosting.rewrites (hosting/firebase.json)
+       ├── /sendgrid-mcp, /sendgrid-mcp/*                             → Cloud Run: sendgrid-mcp (asia-east1)
+       ├── /notion-mcp, /notion-mcp/*                                 → Cloud Run: notion-mcp (asia-east1)
+       ├── /google-search-console-mcp, /google-search-console-mcp/*   → Cloud Run: google-search-console-mcp (asia-east1)
+       ├── /fundfluent-mcp, /fundfluent-mcp/*                         → Cloud Run: fundfluent-mcp (asia-east1)
+       └── /playwright-mcp, /playwright-mcp/*                         → Cloud Run: playwright-mcp (us-central1)
 ```
 
----
-
-## Resources
-
-| Resource | Name | Notes |
-|---|---|---|
-| Static IP | `mcp-ip` | Global, `35.244.199.141` |
-| SSL Certificate | `mcp-cert` | Managed, ACTIVE for `mcp.fluentlab.co` |
-| NEG | `neg-sendgrid` | Serverless, `asia-east1`, Cloud Run service `sendgrid-mcp` |
-| NEG | `neg-google-search-console` | Serverless, `asia-east1`, Cloud Run service `google-search-console-mcp` |
-| NEG | `neg-not-found` | Serverless, `asia-east1`, Cloud Run service `not-found` — default backend |
-| Backend Service | `backend-sendgrid-mcp` | Global, HTTP |
-| Backend Service | `backend-google-search-console-mcp` | Global, HTTP |
-| Backend Service | `backend-not-found` | Global, HTTP — default backend (returns 404) |
-| NEG | `neg-fundfluent` | Serverless, `asia-east1`, Cloud Run service `fundfluent-mcp` |
-| Backend Service | `backend-fundfluent-mcp` | Global, HTTP |
-| URL Map | `mcp-urlmap` | Paths: `/sendgrid-mcp`, `/sendgrid-mcp/*`, `/google-search-console-mcp`, `/google-search-console-mcp/*`, `/fundfluent-mcp`, `/fundfluent-mcp/*` |
-| Target HTTPS Proxy | `mcp-proxy` | Uses `mcp-cert` |
-| Forwarding Rule | `mcp-forwarding-rule` | `35.244.199.141:443` → `mcp-proxy` |
+SSL is fully managed by Firebase — no certificate resource to create or renew.
 
 ---
 
-## Setup Commands
+## One-Time Project Setup (already done)
 
-Set variables:
 ```bash
 PROJECT=ff-mcp-490817
-REGION=asia-east1
-DOMAIN=mcp.fluentlab.co
+
+# Enable required APIs
+gcloud services enable firebase.googleapis.com dns.googleapis.com --project=$PROJECT
+
+# Attach Firebase to the existing GCP project (accept ToS in console if prompted)
+firebase projects:addfirebase $PROJECT
+
+npm install -g firebase-tools
+firebase login
 ```
 
-### 1. Static IP
+DNS for `fluentlab.co` is managed in Cloud DNS under project `vpc-production-349017`, zone `mcp-fluentlab-co` (not `ff-mcp-490817`) — check there if you need to touch DNS records:
+
 ```bash
-gcloud compute addresses create mcp-ip \
-  --network-tier=PREMIUM --global \
-  --project=$PROJECT
+gcloud dns record-sets list --zone=mcp-fluentlab-co --project=vpc-production-349017
 ```
 
-### 2. SSL Certificate
-```bash
-gcloud compute ssl-certificates create mcp-cert \
-  --domains=$DOMAIN \
-  --global --project=$PROJECT
-```
-
-### 3. Serverless NEG (one per MCP service)
-```bash
-# sendgrid
-gcloud compute network-endpoint-groups create neg-sendgrid \
-  --region=$REGION \
-  --network-endpoint-type=serverless \
-  --cloud-run-service=sendgrid-mcp \
-  --project=$PROJECT
-```
-
-### 4. Backend Service (one per MCP service)
-```bash
-# sendgrid
-gcloud compute backend-services create backend-sendgrid-mcp \
-  --load-balancing-scheme=EXTERNAL_MANAGED \
-  --global --project=$PROJECT
-
-gcloud compute backend-services add-backend backend-sendgrid-mcp \
-  --network-endpoint-group=neg-sendgrid \
-  --network-endpoint-group-region=$REGION \
-  --global --project=$PROJECT
-```
-
-### 5. URL Map
-```bash
-gcloud compute url-maps create mcp-urlmap \
-  --default-service=backend-sendgrid-mcp \
-  --project=$PROJECT
-
-gcloud compute url-maps import mcp-urlmap \
-  --global --project=$PROJECT << 'EOF'
-name: mcp-urlmap
-defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
-hostRules:
-  - hosts: ["mcp.fluentlab.co"]
-    pathMatcher: mcp-paths
-pathMatchers:
-  - name: mcp-paths
-    defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
-    pathRules:
-      - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
-      - paths: ["/google-search-console-mcp", "/google-search-console-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-google-search-console-mcp
-EOF
-```
-
-### 6. Target HTTPS Proxy
-```bash
-gcloud compute target-https-proxies create mcp-proxy \
-  --url-map=mcp-urlmap \
-  --ssl-certificates=mcp-cert \
-  --global --project=$PROJECT
-```
-
-### 7. Forwarding Rule
-```bash
-gcloud compute forwarding-rules create mcp-forwarding-rule \
-  --address=mcp-ip \
-  --target-https-proxy=mcp-proxy \
-  --ports=443 \
-  --global --project=$PROJECT
-```
-
-### 8. DNS
-Point an A record at your domain registrar:
-```
-mcp.fluentlab.co  A  35.244.199.141
-```
-
-> SSL cert provisioning takes ~10–15 minutes after DNS propagates.
-> Check status: `gcloud compute ssl-certificates describe mcp-cert --global --project=$PROJECT`
+Current records: a TXT ownership record (`hosting-site=ff-mcp-490817`) and an A record pointing at `199.36.158.100` (Firebase Hosting's fixed serving IP — this is a stable, documented Firebase IP, not project-specific).
 
 ---
 
 ## Adding a New MCP Service
 
-Example: adding `notion-mcp` at `/notion`.
+1. Deploy the Cloud Run service (via existing GitHub Actions workflow).
+2. Add two rewrite rules to [`hosting/firebase.json`](hosting/firebase.json):
+   ```json
+   { "source": "/<name>-mcp/**", "run": { "serviceId": "<name>-mcp", "region": "<region>" } },
+   { "source": "/<name>-mcp", "run": { "serviceId": "<name>-mcp", "region": "<region>" } }
+   ```
+3. Deploy the hosting config:
+   ```bash
+   cd hosting
+   firebase deploy --only hosting --project ff-mcp-490817
+   ```
+4. Update `CLAUDE.md`'s rewrite table.
 
-```bash
-# 1. Deploy the Cloud Function (gen2) named notion-mcp
-
-# 2. Create NEG
-gcloud compute network-endpoint-groups create neg-notion \
-  --region=$REGION \
-  --network-endpoint-type=serverless \
-  --cloud-run-service=notion-mcp \
-  --project=$PROJECT
-
-# 3. Create backend service
-gcloud compute backend-services create backend-notion-mcp \
-  --load-balancing-scheme=EXTERNAL_MANAGED \
-  --global --project=$PROJECT
-
-gcloud compute backend-services add-backend backend-notion-mcp \
-  --network-endpoint-group=neg-notion \
-  --network-endpoint-group-region=$REGION \
-  --global --project=$PROJECT
-
-# 4. Add path rule to URL map
-gcloud compute url-maps import mcp-urlmap \
-  --global --project=$PROJECT << 'EOF'
-name: mcp-urlmap
-defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
-hostRules:
-  - hosts: ["mcp.fluentlab.co"]
-    pathMatcher: mcp-paths
-pathMatchers:
-  - name: mcp-paths
-    defaultService: projects/ff-mcp-490817/global/backendServices/backend-not-found
-    pathRules:
-      - paths: ["/sendgrid-mcp", "/sendgrid-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-sendgrid-mcp
-      - paths: ["/google-search-console-mcp", "/google-search-console-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-google-search-console-mcp
-      - paths: ["/notion-mcp", "/notion-mcp/*"]
-        service: projects/ff-mcp-490817/global/backendServices/backend-notion-mcp
-EOF
-```
+No DNS, SSL cert, or load-balancer changes needed — the domain and cert are already wired up.
 
 ---
 
 ## MCP Client Configuration
 
+URL scheme is unchanged from the old load-balancer setup:
+
 ```json
 {
   "mcpServers": {
-    "sendgrid": {
-      "type": "http",
-      "url": "https://mcp.fluentlab.co/sendgrid"
+    "sendgrid-ext": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.fluentlab.co/sendgrid-mcp", "--header", "Authorization: Bearer ${SENDGRID_BEARER}"]
     }
   }
 }
 ```
+
+---
+
+## Deploying Hosting Changes
+
+```bash
+cd hosting
+firebase deploy --only hosting --project ff-mcp-490817
+```
+
+Test URL (bypasses the custom domain, useful for isolating DNS/cert issues): `https://ff-mcp-490817.web.app/<name>-mcp`

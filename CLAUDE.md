@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-A pnpm monorepo of MCP (Model Context Protocol) servers, each deployed as a Google Cloud Functions gen2 service. The custom domain `mcp.fluentlab.co` routes to them via a GCP Load Balancer.
+A pnpm monorepo of MCP (Model Context Protocol) servers, each deployed as a Google Cloud Functions gen2 service. The custom domain `mcp.fluentlab.co` routes to them via Firebase Hosting rewrites (path → Cloud Run service).
 
 **Key docs to read before making changes:**
 - [`README.md`](README.md) — architecture overview and the critical Accept-header fix
-- [`GCP_SETUP.md`](GCP_SETUP.md) — load balancer resources, path rules, and commands for adding new MCP services
+- [`GCP_SETUP.md`](GCP_SETUP.md) — Firebase Hosting config, rewrite rules, and commands for adding new MCP services
 
 ---
 
@@ -59,19 +59,22 @@ For local dev, Google credentials go in `GOOGLE_SERVICE_ACCOUNT_JSON` env var (c
 
 ---
 
-## Load Balancer Path Rules
+## Firebase Hosting Rewrites
 
-See [`GCP_SETUP.md`](GCP_SETUP.md) for full commands. Current path routing on `mcp.fluentlab.co`:
+See [`GCP_SETUP.md`](GCP_SETUP.md) for full commands. Config lives in [`hosting/firebase.json`](hosting/firebase.json). Current path routing on `mcp.fluentlab.co`:
 
-| Path | Backend |
-|------|---------|
-| `/sendgrid-mcp`, `/sendgrid-mcp/*` | `backend-sendgrid-mcp` |
-| `/google-search-console-mcp`, `/google-search-console-mcp/*` | `backend-google-search-console-mcp` |
+| Path | Cloud Run service | Region |
+|------|---------|--------|
+| `/sendgrid-mcp`, `/sendgrid-mcp/*` | `sendgrid-mcp` | `asia-east1` |
+| `/notion-mcp`, `/notion-mcp/*` | `notion-mcp` | `asia-east1` |
+| `/google-search-console-mcp`, `/google-search-console-mcp/*` | `google-search-console-mcp` | `asia-east1` |
+| `/fundfluent-mcp`, `/fundfluent-mcp/*` | `fundfluent-mcp` | `asia-east1` |
+| `/playwright-mcp`, `/playwright-mcp/*` | `playwright-mcp` | `us-central1` |
 
 **When you add a new MCP service, you must also:**
-1. Create a Serverless NEG pointing to the new Cloud Function
-2. Create a backend service and attach the NEG
-3. Add a path rule to the `mcp-urlmap` URL map (see "Adding a New MCP Service" section in `GCP_SETUP.md`)
+1. Add two rewrite rules to `hosting/firebase.json` (see "Adding a New MCP Service" section in `GCP_SETUP.md`)
+2. Redeploy: `cd hosting && firebase deploy --only hosting --project ff-mcp-490817`
+3. Update the table above
 
 ---
 
@@ -79,11 +82,10 @@ See [`GCP_SETUP.md`](GCP_SETUP.md) for full commands. Current path routing on `m
 
 | Resource | Name | Notes |
 |---|---|---|
-| Project | `ff-mcp-490817` | |
-| Region | `asia-east1` | all Cloud Functions deployed here |
-| Static IP | `mcp-ip` | `35.244.199.141` |
-| SSL Cert | `mcp-cert` | `mcp.fluentlab.co` |
-| URL Map | `mcp-urlmap` | path-based routing |
+| Project | `ff-mcp-490817` | Firebase-enabled |
+| Region | `asia-east1` | most Cloud Functions deployed here (`playwright-mcp` is `us-central1`) |
+| Firebase Hosting site | `ff-mcp-490817` | serves `mcp.fluentlab.co`, `ff-mcp-490817.web.app` |
+| DNS zone | `mcp-fluentlab-co` | lives in project `vpc-production-349017`, **not** `ff-mcp-490817` |
 | SA (deploy) | `ff-mcp-cloud-run@ff-mcp-490817.iam.gserviceaccount.com` | used by Cloud Functions |
 
 ---
